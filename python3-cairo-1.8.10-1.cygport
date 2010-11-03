@@ -1,0 +1,16 @@
+ORIG_PN="pycairo"
+inherit python3 waf
+
+DESCRIPTION="Python libcairo bindings"
+HOMEPAGE="http://cairographics.org/pycairo"
+SRC_URI="http://cairographics.org/releases/pycairo-${PV}.tar.bz2"
+PATCH_URI="1.8.10-head-init.patch"
+
+WAF="${PYTHON3} ./waf"
+DOCS="COPYING*"
+
+src_install() {
+	cd ${B}
+	waf_install
+	rm -f ${D}/usr/lib/*.a
+}
