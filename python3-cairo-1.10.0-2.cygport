@@ -1,0 +1,29 @@
+ORIG_PN="pycairo"
+inherit python3 waf
+
+CATEGORY="Python"
+SUMMARY="Py3K libcairo bindings"
+DESCRIPTION="Python3 bindings to the cairo graphics library"
+HOMEPAGE="http://cairographics.org/pycairo"
+SRC_URI="http://cairographics.org/releases/pycairo-${PV}.tar.bz2"
+PATCH_URI="1.8.10-head-init.patch"
+
+PKG_NAMES="${PN} ${PN}-devel"
+python3_cairo_CONTENTS="${PYTHON3_SITELIB#/} usr/share/doc/"
+python3_cairo_devel_CONTENTS="usr/include/ usr/lib/pkgconfig/"
+python3_cairo_devel_REQUIRES=${PN}
+python3_cairo_devel_SUMMARY="${SUMMARY} (development files)"
+
+export PYTHON=${PYTHON3}
+WAF="${PYTHON3} ./waf"
+DOCS="COPYING*"
+
+src_install() {
+	cd ${B}
+	python3into cairo
+	dopython3 build_directory/src/_cairo*.dll src/__init__.py
+	includeinto pycairo
+	doinclude src/py3cairo.h
+	dopkgconfig build_directory/py3cairo.pc
+	python3_optimize
+}

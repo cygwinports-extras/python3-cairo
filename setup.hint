@@ -1,5 +1,0 @@
-category: Python
-requires: libcairo2 python3
-sdesc: "Py3K libcairo bindings"
-ldesc: "Python3 bindings to libcairo"
-
