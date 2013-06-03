@@ -1,0 +1,50 @@
+x86_64 python3 is built without threads for now
+
+--- origsrc/pycairo-1.10.0/src/surface.c	2013-06-03 16:33:32.940423800 -0500
++++ src/pycairo-1.10.0/src/surface.c	2013-06-03 16:49:22.731748800 -0500
+@@ -116,7 +116,9 @@ PycairoSurface_FromSurface (cairo_surfac
+  */
+ static cairo_status_t
+ _write_func (void *closure, const unsigned char *data, unsigned int length) {
++#ifdef WITH_THREAD
+   PyGILState_STATE gstate = PyGILState_Ensure();
++#endif
+   //  PyObject *res = PyObject_CallMethod ((PyObject *)closure, "write", "(s#)",
+   //				       data, (Py_ssize_t)length);
+   PyObject *res = PyObject_CallMethod ((PyObject *)closure, "write", "(y#)",
+@@ -125,11 +127,15 @@ _write_func (void *closure, const unsign
+     /* an exception has occurred, it will be picked up later by
+      * Pycairo_Check_Status()
+      */
++#ifdef WITH_THREAD
+     PyGILState_Release(gstate);
++#endif
+     return CAIRO_STATUS_WRITE_ERROR;
+   }
+   Py_DECREF(res);
++#ifdef WITH_THREAD
+   PyGILState_Release(gstate);
++#endif
+   return CAIRO_STATUS_SUCCESS;
+ }
+ 
+@@ -465,7 +471,9 @@ _read_func (void *closure, unsigned char
+   char *buffer;
+   Py_ssize_t str_length;
+   cairo_status_t status = CAIRO_STATUS_READ_ERROR;
++#ifdef WITH_THREAD
+   PyGILState_STATE gstate = PyGILState_Ensure();
++#endif
+   PyObject *pyBytes = PyObject_CallMethod ((PyObject *)closure, "read", "(i)",
+ 					 length);
+   if (pyBytes == NULL) {
+@@ -483,7 +491,9 @@ _read_func (void *closure, unsigned char
+   status = CAIRO_STATUS_SUCCESS;
+  end:
+   Py_XDECREF(pyBytes);
++#ifdef WITH_THREAD
+   PyGILState_Release(gstate);
++#endif
+   return status;
+ }
+ 
