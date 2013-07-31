@@ -3,15 +3,14 @@ inherit python3 waf
 
 NAME="python3-cairo"
 VERSION=1.10.0
-RELEASE=2
+RELEASE=3
 CATEGORY="Python"
 SUMMARY="Py3K libcairo bindings"
 DESCRIPTION="Python3 bindings to the cairo graphics library"
 HOMEPAGE="http://cairographics.org/pycairo"
 SRC_URI="http://cairographics.org/releases/pycairo-${VERSION}.tar.bz2"
 SRC_DIR="pycairo-${VERSION}"
-PATCH_URI="1.8.10-head-init.patch
-           1.10.0-without-threads.patch"
+PATCH_URI="1.8.10-head-init.patch"
 
 PKG_NAMES="${NAME} ${NAME}-devel"
 python3_cairo_CONTENTS="${PYTHON3_SITELIB#/} usr/share/doc/"
