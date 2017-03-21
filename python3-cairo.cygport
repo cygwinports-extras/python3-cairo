@@ -3,14 +3,19 @@ inherit python3 waf
 
 NAME="python3-cairo"
 VERSION=1.10.0
-RELEASE=4
+RELEASE=5
 CATEGORY="Python"
 SUMMARY="Py3K libcairo bindings"
 DESCRIPTION="Python3 bindings to the cairo graphics library"
 HOMEPAGE="http://cairographics.org/pycairo"
 SRC_URI="http://cairographics.org/releases/pycairo-${VERSION}.tar.bz2"
 SRC_DIR="pycairo-${VERSION}"
-PATCH_URI="1.8.10-head-init.patch"
+PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/rpms/python3-cairo.git/plain/cairo-waf-use-python-config-as-shell-script.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/python3-cairo.git/plain/pycairo-1.10.0-test-python3.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/python3-cairo.git/plain/pycairo-1.10.0-pickle-python3.patch
+	1.8.10-head-init.patch
+"
 
 PKG_NAMES="${NAME} ${NAME}-devel"
 python3_cairo_CONTENTS="${PYTHON3_SITELIB#/} usr/share/doc/"
@@ -19,7 +24,13 @@ python3_cairo_devel_REQUIRES=${NAME}
 python3_cairo_devel_SUMMARY="${SUMMARY} (development files)"
 
 export PYTHON=${PYTHON3}
+WAF="${PYTHON3} ./waf"
 DOCS="COPYING*"
+
+CYGPORT_USE_UNSTABLE_API=1
+src_unpack_hook() {
+	${WAF} --version
+}
 
 src_install() {
 	cd ${B}
